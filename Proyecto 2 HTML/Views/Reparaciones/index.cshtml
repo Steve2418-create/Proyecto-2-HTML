@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Proyecto_2_HTML.Modelos.Reparacion>
+
+@{
+    ViewBag.Title = "Lista de Reparaciones";
+}
+
+<h2 class="mt-4">Gestión de Reparaciones</h2>
+
+<p class="mb-3">
+    @Html.ActionLink("Nueva Solicitud", "Crear", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-bordered table-striped shadow-sm bg-white">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Equipo</th>
+            <th>Fecha Solicitud</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ReparacionID</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ModeloEquipo))
+                    {
+                        <strong>@item.ModeloEquipo</strong>
+                    }
+                    else
+                    {
+                        <span class="text-muted">ID: @item.EquipoID</span>
+                    }
+                </td>
+                <td>@item.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @if (item.Estado == "Pendiente")
+                    {
+                        <span class="badge bg-warning text-dark">Pendiente</span>
+                    }
+                    else if (item.Estado == "Urgente")
+                    {
+                        <span class="badge bg-danger">Urgente</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">@item.Estado</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

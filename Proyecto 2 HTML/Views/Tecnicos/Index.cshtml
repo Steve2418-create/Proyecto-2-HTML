@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Proyecto_2_HTML.Modelos.Tecnico>
+
+@{
+ 
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+
+
+    @if (Session["Rol"] != null && Session["Rol"].ToString() == "admin")
+    {
+        <p>
+            @Html.ActionLink("Crear Nuevo Técnico", "Crear", null, new { @class = "btn btn-success" })
+        </p>
+    }
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Especialidad)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Especialidad)
+                </td>
+                <td>
+                    @if (Session["Rol"] != null && Session["Rol"].ToString() == "admin")
+                    {
+                        @Html.ActionLink("Editar", "Editar", new { id = item.TecnicoID }, new { @class = "btn btn-warning btn-sm" })
+                        <span> | </span>
+                        @Html.ActionLink("Eliminar", "Eliminar", new { id = item.TecnicoID }, new { @class = "btn btn-danger btn-sm" })
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+</body>
+</html>
