@@ -1,59 +1,56 @@
 ﻿@model Proyecto_2_HTML.Modelos.Equipo
 
 @{
-    Layout = null;
+    ViewBag.Title = "Registrar Equipo";
 }
 
-<!DOCTYPE html>
+<h2 class="mt-4">Registrar Nuevo Equipo</h2>
+<hr />
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Crear</title>
-</head>
-<body>
-    @using (Html.BeginForm()) 
-    {
-        @Html.AntiForgeryToken()
-        
-        <div class="form-horizontal">
-            <h4>Equipo</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.TipoEquipo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.TipoEquipo, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.TipoEquipo, "", new { @class = "text-danger" })
-                </div>
-            </div>
-    
-            <div class="form-group">
-                @Html.LabelFor(model => model.Modelo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Modelo, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Modelo, "", new { @class = "text-danger" })
-                </div>
-            </div>
-    
-            <div class="form-group">
-                @Html.LabelFor(model => model.UsuarioID, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.UsuarioID, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.UsuarioID, "", new { @class = "text-danger" })
-                </div>
-            </div>
-    
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal card p-4 shadow-sm" style="max-width: 600px;">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <div class="form-group mb-3">
+            <label class="control-label fw-bold">Tipo de Equipo</label>
+            <div class="col-md-10">
+                <select name="TipoEquipo" class="form-control form-select">
+                    <option value="Laptop">Laptop</option>
+                    <option value="PC Escritorio">PC Escritorio</option>
+                    <option value="Impresora">Impresora</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Celular">Celular</option>
+                    <option value="Otro">Otro</option>
+                </select>
             </div>
         </div>
-    }
-    
-    <div>
-        @Html.ActionLink("Back to List", "Index")
+
+        <div class="form-group mb-3">
+            <label class="control-label fw-bold">Modelo / Marca</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Modelo, new { htmlAttributes = new { @class = "form-control", required = "required", placeholder = "Ej: Dell Latitude 5420" } })
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="control-label fw-bold">Dueño del Equipo</label>
+            <div class="col-md-10">
+                @Html.DropDownList("UsuarioID", ViewBag.ListaUsuarios as SelectList, "--- Seleccione un Cliente ---", new { @class = "form-control form-select", required = "required" })
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar Equipo" class="btn btn-success" />
+                @Html.ActionLink("Volver a la Lista", "Index", null, new { @class = "btn btn-outline-secondary ms-2" })
+            </div>
+        </div>
     </div>
-</body>
-</html>
+}

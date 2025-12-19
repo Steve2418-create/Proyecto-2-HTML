@@ -10,75 +10,55 @@ namespace Proyecto_2_HTML.Controladores
 {
     public class EquiposController : Controller
     {
-        // GET: Equipos (Listar)
+        // GET: Equipos
         public ActionResult Index()
         {
             return View(EquiposLogica.Listar());
         }
 
-        // GET: Crear
+        // GET: Equipos/Crear
         public ActionResult Crear()
         {
-            // Cargar lista de usuarios para el ComboBox (Dropdown)
-            // "UsuarioID" es el valor que se guarda, "Nombre" es lo que se ve
+            // CARGAR LA LISTA DE DUEÑOS (USUARIOS) PARA EL DROPDOWN
+            // Value = UsuarioID (lo que se guarda), Text = Nombre (lo que se ve)
             ViewBag.ListaUsuarios = new SelectList(UsuarioLogica.Listar(), "UsuarioID", "Nombre");
+
             return View();
         }
 
-        // POST: Crear
+        // POST: Equipos/Crear
         [HttpPost]
         public ActionResult Crear(Equipo oEquipo)
         {
-            if (ModelState.IsValid)
+            // Validar si se seleccionó un dueño
+            if (oEquipo.UsuarioID == 0)
             {
-                bool respuesta = EquiposLogica.Registrar(oEquipo);
-                if (respuesta)
-                    return RedirectToAction("Index");
+                ModelState.AddModelError("UsuarioID", "Debe seleccionar un dueño");
             }
-            // Si falla, recargamos la lista para que no de error la vista
-            ViewBag.ListaUsuarios = new SelectList(UsuarioLogica.Listar(), "UsuarioID", "Nombre");
-            return View(oEquipo);
-        }
 
-        // GET: Editar
-        public ActionResult Editar(int id)
-        {
-            var equipo = EquiposLogica.Listar().Find(e => e.EquipoID == id);
+            // Ignoramos validaciones automáticas tontas
+            ModelState.Remove("UsuarioID");
 
-            // También cargamos la lista aquí para poder cambiar de dueño si es necesario
-            ViewBag.ListaUsuarios = new SelectList(UsuarioLogica.Listar(), "UsuarioID", "Nombre", equipo.UsuarioID);
+            bool respuesta = EquiposLogica.Registrar(oEquipo);
 
-            return View(equipo);
-        }
-
-        // POST: Editar
-        [HttpPost]
-        public ActionResult Editar(Equipo oEquipo)
-        {
-            if (ModelState.IsValid)
+            if (respuesta)
             {
-                bool respuesta = EquiposLogica.Modificar(oEquipo);
-                if (respuesta)
-                    return RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
-            ViewBag.ListaUsuarios = new SelectList(UsuarioLogica.Listar(), "UsuarioID", "Nombre", oEquipo.UsuarioID);
-            return View(oEquipo);
+            else
+            {
+                // Si falla, recargamos la lista de dueños
+                ViewBag.ListaUsuarios = new SelectList(UsuarioLogica.Listar(), "UsuarioID", "Nombre");
+                ViewBag.Error = "No se pudo registrar el equipo";
+                return View(oEquipo);
+            }
         }
 
-        // GET: Eliminar
+        // POST: Equipos/Eliminar/5
         public ActionResult Eliminar(int id)
         {
-            var equipo = EquiposLogica.Listar().Find(e => e.EquipoID == id);
-            return View(equipo);
-        }
-
-        [HttpPost]
-        public ActionResult Eliminar(string id)
-        {
-            bool respuesta = EquiposLogica.Eliminar(int.Parse(id));
-            if (respuesta)
-                return RedirectToAction("Index");
-            return View();
+            bool respuesta = EquiposLogica.Eliminar(id);
+            return RedirectToAction("Index");
         }
     }
 }
